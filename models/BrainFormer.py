@@ -162,7 +162,7 @@ class ResNet(nn.Module):
                     nn.init.constant_(m.bn2.weight, 0)  # type: ignore[arg-type]
 
         #self.attention1 = mlp_mixer_pytorch.MLPLayer(dim1=64, dim2=16*18*16)
-        self.attention2 = ShallowAttention(dim1=128, dim2=16*18*16)
+        self.attention2 = ShallowAttention(dim1=128, dim2=16*12*16)
         self.attention3 = DeepAttention(dim=256, heads=4, dim_head=64, mlp_dim=256)
         self.attention4 = DeepAttention(dim=512, heads=4, dim_head=64, mlp_dim=512)
 
@@ -197,8 +197,9 @@ class ResNet(nn.Module):
 
         x = self.layer1(x)
         x = self.layer2(x)
+        print(x.size())
         x = self.attention2(x)
-
+        print(x.size())
         x = self.layer3(x)
         x = x + self.attention3(x)
 

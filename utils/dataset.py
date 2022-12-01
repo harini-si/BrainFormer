@@ -10,7 +10,7 @@ def volume_pad(volume, pad_shape):
 	w = min(w, pad_shape[2])
 	volume = volume[0:d, 0:h, 0:w]
 
-	volume_pad = np.zero(pad_shape)
+	volume_pad = np.zeros(pad_shape)
 	volume_pad[0:d, 0:h, 0:w] =  volume
 	return volume_pad
 
@@ -31,10 +31,13 @@ class fMRIdataset(data.Dataset):
 		im_path = self.img_list[index]
 		label = self.label_list[index]
 		volume = np.load(im_path) #d*h*w
-
+		#print(volume.shape)
+		x=np.zeros((64,64,3))
+		volume=np.expand_dims(volume, axis=-1)
+		volume=np.array(np.broadcast_to(volume,(64,64,3)))
 		volume = volume_pad(volume, self.volume_size)
 		volume = np.expand_dims(volume, 0)
-
+		
 		return volume, label, index
 
 	def __len__(self):
@@ -62,9 +65,11 @@ class fMRIdataset_stride(data.Dataset):
 		label = self.label_list[index]
 
 		volume = np.load(im_path) #d*h*w
+		volume=np.expand_dims(volume, axis=-1)
+		print(volume.shape)
 		volume = volume_pad(volume, self.volume_size)
 		volume = np.expand_dims(volume, 0)
-
+		
 		return volume, label, index
 
 	def __len__(self):
